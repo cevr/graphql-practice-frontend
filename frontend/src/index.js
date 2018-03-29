@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'tachyons';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -12,7 +13,7 @@ export const history = createBrowserHistory();
 const Root = () => {
     return (
         <ApolloProvider client={client}>
-            <Router history={history}>
+            <Router>
                 <App />
             </Router>
         </ApolloProvider>

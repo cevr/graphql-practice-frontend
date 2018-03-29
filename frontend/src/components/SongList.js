@@ -1,15 +1,30 @@
-import React, { Component } from 'react';
-import { graphql } from 'react-apollo';
+import React, { Component, Fragment } from 'react';
+import { Query, Mutation } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
-import { fetchSongs } from '../queries/queries';
+import { FETCH_SONGS } from '../graphql/queries';
+import { DELETE_SONG } from '../graphql/mutations';
+
 class SongList extends Component {
-    renderSongList = () => {
-        const { songs, loading } = this.props.data;
+    onSongDelete = (deleteSong, id) => {
+        deleteSong({
+            variables: { id },
+            refetchQueries: [{ query: FETCH_SONGS }]
+        });
+    };
+    renderSongList = (fetchSongs, deleteSong) => {
+        const { loading, data } = fetchSongs;
+
         return !loading ? (
-            songs.map(song => (
-                <li className="collection-item" key={song.id}>
-                    {song.title}
+            data.songs.map(({ title, id }) => (
+                <li className="collection-item flex justify-between" key={id}>
+                    {title}
+                    <i
+                        className="material-icons pointer"
+                        onClick={() => this.onSongDelete(deleteSong, id)}
+                    >
+                        delete
+                    </i>
                 </li>
             ))
         ) : (
@@ -18,14 +33,30 @@ class SongList extends Component {
     };
     render() {
         return (
-            <div>
-                <ul className="collection">{this.renderSongList()}</ul>
-                <Link to="/new" className="btn-floating btn-large red right">
-                    <i className="material-icons">add</i>
-                </Link>
-            </div>
+            <Mutation mutation={DELETE_SONG}>
+                {(deleteSong, { data }) => (
+                    <Query query={FETCH_SONGS}>
+                        {fetchSongs => (
+                            <Fragment>
+                                <ul className="collection">
+                                    {this.renderSongList(
+                                        fetchSongs,
+                                        deleteSong
+                                    )}
+                                </ul>
+                                <Link
+                                    to="/new"
+                                    className="btn-floating btn-large red right"
+                                >
+                                    <i className="material-icons">add</i>
+                                </Link>
+                            </Fragment>
+                        )}
+                    </Query>
+                )}
+            </Mutation>
         );
     }
 }
 
-export default graphql(fetchSongs)(SongList);
+export default SongList;
