@@ -11,7 +11,6 @@ const SongDetail = ({ data, match }) => {
     return (
         <Query query={FETCH_SONG} variables={{ id }}>
             {({ loading, data }) => {
-                console.log(data);
                 return !loading ? (
                     <Fragment>
                         <h3>{data.song.title}</h3>

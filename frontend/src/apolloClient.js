@@ -1,3 +1,9 @@
 import ApolloClient from 'apollo-boost';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
-export const client = new ApolloClient({});
+const cache = new InMemoryCache({
+    dataIdFromObject: object => object.id
+});
+export const client = new ApolloClient({
+    cache
+});

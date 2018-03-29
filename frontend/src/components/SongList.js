@@ -18,17 +18,20 @@ class SongList extends Component {
 
         return !loading ? (
             data.songs.map(({ title, id }) => (
-                <Link key={id} to={`/detail/${id}`}>
-                    <li className="collection-item flex justify-between pointer">
+                <li
+                    key={id}
+                    className="collection-item flex justify-between pointer"
+                >
+                    <Link className="w-100 h-100" to={`/detail/${id}`}>
                         {title}
-                        <i
-                            className="material-icons pointer dim red-text"
-                            onClick={() => this.onSongDelete(deleteSong, id)}
-                        >
-                            delete
-                        </i>
-                    </li>{' '}
-                </Link>
+                    </Link>
+                    <i
+                        className="material-icons pointer dim red-text"
+                        onClick={() => this.onSongDelete(deleteSong, id)}
+                    >
+                        delete
+                    </i>
+                </li>
             ))
         ) : (
             <div>

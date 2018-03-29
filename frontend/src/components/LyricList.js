@@ -1,14 +1,19 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 import { LIKE_LYRIC } from '../graphql/mutations';
-import { FETCH_SONG } from '../graphql/queries';
 
 const LyricList = ({ lyrics, songId }) => {
-    console.log(lyrics);
-    const onLyricLike = (likeLyric, id) => {
+    const onLyricLike = (likeLyric, id, likes) => {
         likeLyric({
             variables: { id },
-            refetchQueries: [{ query: FETCH_SONG, variables: { id: songId } }]
+            optimisticResponse: {
+                __typename: 'Mutation',
+                likeLyric: {
+                    id,
+                    __typename: 'LyricType',
+                    likes: likes + 1
+                }
+            }
         });
     };
     return (
@@ -22,13 +27,15 @@ const LyricList = ({ lyrics, songId }) => {
                         >
                             {content}
                             <div className="flex justify-between items-center">
+                                Likes: {likes}
                                 <i
-                                    className="material-icons pointer dim blue-text"
-                                    onClick={() => onLyricLike(likeLyric, id)}
+                                    className="material-icons pointer dim blue-text ml2"
+                                    onClick={() =>
+                                        onLyricLike(likeLyric, id, likes)
+                                    }
                                 >
-                                    thumb-up
+                                    thumb_up
                                 </i>
-                                {likes}
                             </div>
                         </li>
                     ))}
